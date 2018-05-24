@@ -1,0 +1,68 @@
+{
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+        },
+        {
+          "not": {
+            "field": "type",
+            "in": "[parameters('listOfResourceTypesAllowed')]"
+          }
+        },
+        {
+          "not": {
+            "field": "location",
+            "in": "[parameters('listOfAllowedLocations')]"
+          }
+        },
+        {
+          "not": {
+            "field": "[concat('tags[',parameters('tagName'), ']')]",
+            "equals": "[parameters('tagValue')]"
+          }
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "parameters": {
+    "tagName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "tagName",
+        "description": "Name of the tag, such as costCenter"
+      }
+    },
+    "tagValue": {
+      "type": "String",
+      "metadata": {
+        "displayName": "tagValue",
+        "description": "Value of the tag, such as headquarter"
+      }
+    },
+    "listOfAllowedLocations": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Allowed locations",
+        "description": "The list of locations that can be specified when deploying resources.",
+        "strongType": "location"
+      }
+    },
+    "listOfResourceTypesAllowed": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "Allowed resource types",
+        "description": "The list of resource types that can be deployed.",
+        "strongType": "resourceTypes"
+      }
+    }
+  },
+  "metadata": {
+    "category": "Advanced Restriction"
+  }
+}
